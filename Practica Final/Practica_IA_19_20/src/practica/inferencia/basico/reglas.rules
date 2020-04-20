@@ -9,3 +9,17 @@ rule prioridad1 {
  	h1.setNombre("FIN");
  	// no se incluye "modified" para forzar que finalice la ejecución
 }
+
+rule podar {
+	declarations
+		practica.objetos.Trabajador trabajador;
+		practica.objetos.Herramienta herramienta;
+		practica.objetos.Tarea tarea;
+	preconditions
+		herramienta.getTrabajo().equals("podar");
+		tarea.getTipo().equals("podar");
+		tarea.getUnidades()>=0;
+	actions
+		tarea.setUnidades(tarea.getUnidades()-trabajador.getHabPodar());
+		//modified(tarea);
+}
