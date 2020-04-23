@@ -1,25 +1,51 @@
 // **RECUERDA** PRIORIDAD EN FUNCIÓN DEL ORDEN DE LAS REGLAS (LA SUPERIOR LA MÁS PRIORITARIA)
 
-rule prioridad1 {
-  declarations
-    practica.objetos.Herramienta h1;
-  preconditions
-    !h1.getNombre().equals("");		
-  actions
- 	h1.setNombre("FIN");
- 	// no se incluye "modified" para forzar que finalice la ejecución
+rule cogerHerramienta1 {
+	declarations
+	practica.objetos.Trabajador t1;
+	practica.objetos.Herramienta h1;
+	preconditions
+	t1.getHerramienta()==null;
+	t1.getArea().equals("A");
+	actions
+	t1.setHerramienta(h1);
+	modified(h1);
+	modified(t1);
+	t1.printTrabajador();	
 }
 
-rule podar {
+rule realizarTarea {
 	declarations
-		practica.objetos.Trabajador trabajador;
-		practica.objetos.Herramienta herramienta;
-		practica.objetos.Tarea tarea;
+	practica.objetos.Trabajador t1;
+	practica.objetos.Tarea tarea1;
 	preconditions
-		herramienta.getTrabajo().equals("podar");
-		tarea.getTipo().equals("podar");
-		tarea.getUnidades()>=0;
+	t1.getHerramienta().getTrabajo().equals(tarea1.getTipo());
+	tarea1.getUnidades() > 0;
 	actions
-		tarea.setUnidades(tarea.getUnidades()-trabajador.getHabPodar());
-		//modified(tarea);
+	t1.aumentarTiempoDesp(t1.getArea(), tarea1.getArea());
+	t1.setArea(tarea1.getArea());
+	t1.setTarea(tarea1);
+	t1.aumentarTiempoTarea();
+	t1.getTarea().setUnidades(0);	
+	tarea1.setUnidades(0);
+	modified(t1);
+	modified(tarea1);
+	t1.printTrabajador();
 }
+
+rule volverAlmacen {
+	declarations
+	practica.objetos.Trabajador t1;
+	preconditions
+	!t1.getArea().equals("A");
+	t1.getTarea().getUnidades() == 0;
+	actions
+	t1.aumentarTiempoDespA();
+	t1.setArea("A");	
+	modified(t1);
+	t1.printTrabajador();
+}
+
+
+
+
