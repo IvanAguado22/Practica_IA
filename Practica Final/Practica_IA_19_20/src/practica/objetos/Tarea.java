@@ -51,8 +51,4 @@ public class Tarea {
 		this.unidades = unidades;
 	}
 
-	
-
-
-
 }

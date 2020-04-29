@@ -1,4 +1,5 @@
 package practica.objetos;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Clase creada como objeto base para la práctica 2019-2020 de Inteligencia Artificial, UC3M, Colmenarejo
@@ -8,7 +9,6 @@ package practica.objetos;
  */
 
 public class Trabajador {
-
 	// Variables del objeto Trabajador
 	String nombre;
 	int habPodar;
@@ -18,7 +18,6 @@ public class Trabajador {
 	String area;
 	int tiempoOcupado;
 	Tarea tarea;
-	int tiempoDesp;
 	// AÑADIR LAS VARIABLES NECESARIAS
 
 	/**
@@ -37,39 +36,44 @@ public class Trabajador {
 		// Añadir el estado inicial (estático) de las variables que se añadan
 		// Si se necesita añadir valores variables, como un ID, utilizar setters
 	}
+	
+	/**
+	 * Añadir (si procede) métodos auxiliares, como getters o setters
+	 */
+	
 	public void aumentarTiempoTarea() {
 		switch(this.herramienta.getTrabajo()) {
 			case "limpiar":
 				while(this.tarea.getUnidades() > 0) {
-				if(this.tarea.getUnidades() >= this.habLimpiar) {
+				if(this.tarea.getUnidades() >= (this.habLimpiar + this.herramienta.getMejora() )) {
 					this.tiempoOcupado += 60;
 				}
 				else {
-					this.tiempoOcupado += (60*this.tarea.getUnidades())/this.getHabLimpiar();
+					this.tiempoOcupado += (60*this.tarea.getUnidades()) / (this.habLimpiar + this.herramienta.getMejora());
 				}
-				this.tarea.setUnidades(this.tarea.getUnidades() - this.getHabLimpiar());				
+				this.tarea.setUnidades(this.tarea.getUnidades() - this.habLimpiar - this.herramienta.getMejora());				
 				}
 				break;
 			case "podar":
 				while(this.tarea.getUnidades() > 0) {
-				if(this.tarea.getUnidades() >= this.habPodar) {
+				if(this.tarea.getUnidades() >= (this.habPodar + this.herramienta.getMejora() )) {
 					this.tiempoOcupado += 60;
 				}
 				else {
-					this.tiempoOcupado += (60*this.tarea.getUnidades())/this.getHabPodar();
+					this.tiempoOcupado += (60*this.tarea.getUnidades())/ (this.habPodar + this.herramienta.getMejora());
 				}
-				this.tarea.setUnidades(this.tarea.getUnidades() - this.getHabPodar());				
+				this.tarea.setUnidades(this.tarea.getUnidades() - this.habPodar -  this.herramienta.getMejora());				
 				}
 				break;
 			case "reparar":
 				while(this.tarea.getUnidades() > 0) {
-				if(this.tarea.getUnidades() >= this.habReparar) {
+				if(this.tarea.getUnidades() >= (this.habReparar + this.herramienta.getMejora() )) {
 					this.tiempoOcupado += 60;
 				}
 				else {
-					this.tiempoOcupado += (60*this.tarea.getUnidades())/this.getHabReparar();
+					this.tiempoOcupado += (60*this.tarea.getUnidades()) / (this.habReparar + this.herramienta.getMejora());
 				}
-				this.tarea.setUnidades(this.tarea.getUnidades() - this.getHabReparar());				
+				this.tarea.setUnidades(this.tarea.getUnidades() - this.habReparar -  this.herramienta.getMejora());				
 				}
 				break;
 				default: 
@@ -81,88 +85,88 @@ public class Trabajador {
 		if(destino != "A") {
 		switch(origen + destino) {
 		case "AR":
-			this.tiempoOcupado += 10;
+			this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 			break;
 		case "AJ3":
-			this.tiempoOcupado += 5;
+			this.tiempoOcupado += 5 + this.herramienta.getPeso();
 			break;
 		case "AC2":
-			this.tiempoOcupado += 5;
+			this.tiempoOcupado += 5 + this.herramienta.getPeso();
 			break;
 		case "AJ2":
-			this.tiempoOcupado += 5;
+			this.tiempoOcupado += 5 + this.herramienta.getPeso();
 			break;
 		case "AU":
-			this.tiempoOcupado += 10;
+			this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 			break;
 		case "AC1":
-			this.tiempoOcupado += 10;
+			this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 			break;
 		case "AJ1":
-			this.tiempoOcupado += 10;
+			this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 			break;
 		case "AB":
-			this.tiempoOcupado += 15;
+			this.tiempoOcupado += 15 + (this.herramienta.getPeso() * 3);
 			break;
 		case "RU":
 		case "UR":
-			this.tiempoOcupado += 20;
+			this.tiempoOcupado += 20 + (this.herramienta.getPeso() * 4);
 			break;
 		case "RC2":
 		case "C2R":
-			this.tiempoOcupado += 10;
+			this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 			break;
 		case "UC2":
 		case "C2U":
-			this.tiempoOcupado += 10;
+			this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 			break;
 		case "J1C2":
 		case "C2J1":
-			this.tiempoOcupado += 10;
+			this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 			break;
 		case "J2C2":
 		case "C2J2":
-			this.tiempoOcupado += 5;
+			this.tiempoOcupado += 5 + this.herramienta.getPeso();
 			break;
 		case "J3C2":
 		case "C2J3":
-			this.tiempoOcupado += 5;
+			this.tiempoOcupado += 5 + this.herramienta.getPeso();
 			break;
 		case "J2J1":
 		case "J1J2":
-			this.tiempoOcupado += 5;
+			this.tiempoOcupado += 5 + this.herramienta.getPeso();
 			break;
 		case "J3J1":
 		case "J1J3":
-			this.tiempoOcupado += 15;
+			this.tiempoOcupado += 15 + (this.herramienta.getPeso() * 3);
 			break;
 		case "J2J3":
 		case "J3J2":
-			this.tiempoOcupado += 10;
+			this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 			break;
 		case "UB":
 		case "BU":
-			this.tiempoOcupado += 5;
+			this.tiempoOcupado += 5 + this.herramienta.getPeso();
 			break;
 		case "UJ1":
 		case "J1U":
-			this.tiempoOcupado += 5;
+			this.tiempoOcupado += 5 + this.herramienta.getPeso();
 			break;
 		case "UJ2":
 		case "J2U":
-			this.tiempoOcupado += 5;
+			this.tiempoOcupado += 5 + this.herramienta.getPeso();
 			break;
 		case "C2B":
 		case "BC2":
-			this.tiempoOcupado += 15;
+			this.tiempoOcupado += 15 + (this.herramienta.getPeso() * 3);
 			break;
 		case "J1B":
 		case "BJ1":
-			this.tiempoOcupado += 5;
+			this.tiempoOcupado += 5 + this.herramienta.getPeso();
 			break;
 		case "J2B":
 		case "BJ2":
-			this.tiempoOcupado += 10;
+			this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 			break;
 		default:
 			break;
@@ -173,42 +177,50 @@ public class Trabajador {
 	public void aumentarTiempoDespA() {
 		switch(this.area) {
 			case "R":
-				this.tiempoOcupado += 10;
+				this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 				break;
 			case "J3":
-				this.tiempoOcupado += 5;
+				this.tiempoOcupado += 5 + this.herramienta.getPeso();
 				break;
 			case "C2":
-				this.tiempoOcupado += 5;
+				this.tiempoOcupado += 5 + this.herramienta.getPeso();
 				break;
 			case "J2":
-				this.tiempoOcupado += 5;
+				this.tiempoOcupado += 5 + this.herramienta.getPeso();
 				break;
 			case "U":
-				this.tiempoOcupado += 10;
+				this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 				break;
 			case "C1":
-				this.tiempoOcupado += 10;
+				this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 				break;
 			case "J1":
-				this.tiempoOcupado += 10;
+				this.tiempoOcupado += 10 + (this.herramienta.getPeso() * 2);
 				break;
 			case "B":
-				this.tiempoOcupado += 15;
+				this.tiempoOcupado += 15 + (this.herramienta.getPeso() * 3);
 				break;
 			default:
 				this.tiempoOcupado += 0;
 				break;
 		}		
 	}
+
+	public String formatearMinutosAHoraMinuto(int minutos) {
+	    String formato = "%02d:%02d";
+	    long horasReales = TimeUnit.MINUTES.toHours(minutos);
+	    long minutosReales = TimeUnit.MINUTES.toMinutes(minutos) - TimeUnit.HOURS.toMinutes(TimeUnit.MINUTES.toHours(minutos));
+	    return String.format(formato, horasReales, minutosReales);
+	}
 	
-	/**
-	 * Añadir (si procede) métodos auxiliares, como getters o setters
-	 */
 	public void printTrabajador() {
         System.out.println(this.nombre + " " + this.tiempoOcupado + " mins " + 
     this.herramienta.getNombre() + " " + this.herramienta.getTrabajo() + " " + this.area);
     }
+	
+	public void printTiempoHoras() {
+		System.out.println(this.nombre + " " + "ha trabajado" + " " + formatearMinutosAHoraMinuto(this.tiempoOcupado) + " " + "horas");
+	}
 	
 	public String getNombre() {
 		return nombre;

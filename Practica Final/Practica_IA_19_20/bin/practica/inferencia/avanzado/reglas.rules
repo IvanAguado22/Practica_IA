@@ -1,11 +1,106 @@
 // **RECUERDA** PRIORIDAD EN FUNCIÓN DEL ORDEN DE LAS REGLAS (LA SUPERIOR LA MÁS PRIORITARIA)
+//AVANZADO
 
-rule prioridad1 {
-  declarations
-    practica.objetos.Herramienta h1;
-  preconditions
-    !h1.getNombre().equals("");		
-  actions
- 	h1.setNombre("FIN");
- 	// no se incluye "modified" para forzar que finalice la ejecución
+rule realizarTareaPoda{
+	declarations
+	practica.objetos.Tarea tarea1;
+	practica.objetos.Tarea tarea2;
+	practica.objetos.Trabajador t1;
+	preconditions
+	tarea1.getUnidades() > 0;
+	tarea1.getTipo().equals("podar");
+	tarea2.getTipo().equals("limpiar");
+	tarea2.getArea().equals(tarea1.getArea());
+	t1.getHerramienta().getTrabajo().equals(tarea1.getTipo());
+	actions
+	t1.aumentarTiempoDesp(t1.getArea(), tarea1.getArea());
+	t1.setArea(tarea1.getArea());
+	t1.setTarea(tarea1);
+	tarea2.setUnidades(tarea2.getUnidades() + tarea1.getUnidades());
+	t1.aumentarTiempoTarea();
+	t1.getTarea().setUnidades(0);	
+	tarea1.setUnidades(0);
+	modified(t1);
+	modified(tarea1);
+	t1.printTrabajador();
+}	
+	
+
+rule realizarTarea {
+	declarations
+	practica.objetos.Trabajador t1;
+	practica.objetos.Tarea tarea1;
+	preconditions
+	t1.getHerramienta().getTrabajo().equals(tarea1.getTipo());
+	tarea1.getUnidades() > 0;
+	actions
+	t1.aumentarTiempoDesp(t1.getArea(), tarea1.getArea());
+	t1.setArea(tarea1.getArea());
+	t1.setTarea(tarea1);
+	t1.aumentarTiempoTarea();
+	t1.getTarea().setUnidades(0);	
+	tarea1.setUnidades(0);
+	modified(t1);
+	modified(tarea1);
+	t1.printTrabajador();
+}
+
+rule cogerHerramienta1 {
+	declarations
+	practica.objetos.Trabajador t1;
+	practica.objetos.Herramienta h1;
+	preconditions
+	t1.getHerramienta()==null;
+	t1.getArea().equals("A");
+	h1.getCantidad() > 0;
+	actions
+	h1.setCantidad(h1.getCantidad() - 1);
+	t1.setHerramienta(h1);
+	modified(h1);
+	modified(t1);	
+	t1.printTrabajador();	
+}
+
+rule volverAlmacen {
+	declarations
+	practica.objetos.Trabajador t1;
+	practica.objetos.Trabajador t2;
+	practica.objetos.Trabajador t3;
+	practica.objetos.Trabajador t4;
+	preconditions
+	!t1.getNombre().equals(t2.getNombre());
+	!t1.getNombre().equals(t3.getNombre());
+	!t1.getNombre().equals(t4.getNombre());
+	!t2.getNombre().equals(t3.getNombre());
+	!t2.getNombre().equals(t4.getNombre());
+	!t3.getNombre().equals(t4.getNombre());
+	!t1.getArea().equals("A");
+	t1.getTarea().getUnidades() == 0;
+	!t2.getArea().equals("A");
+	t2.getTarea().getUnidades() == 0;
+	!t3.getArea().equals("A");
+	t3.getTarea().getUnidades() == 0;
+	!t4.getArea().equals("A");
+	t4.getTarea().getUnidades() == 0;
+	actions
+	t1.aumentarTiempoDespA();
+	t2.aumentarTiempoDespA();
+	t3.aumentarTiempoDespA();
+	t4.aumentarTiempoDespA();	
+	t1.setArea("A");
+	t2.setArea("A");
+	t3.setArea("A");
+	t4.setArea("A");
+	t1.getHerramienta().setCantidad(t1.getHerramienta().getCantidad() + 1);	
+	t2.getHerramienta().setCantidad(t2.getHerramienta().getCantidad() + 1);
+	t3.getHerramienta().setCantidad(t3.getHerramienta().getCantidad() + 1);
+	t4.getHerramienta().setCantidad(t4.getHerramienta().getCantidad() + 1);
+	modified(t1);
+	modified(t2);
+	modified(t3);
+	modified(t4);
+	t1.printTiempoHoras();
+	t2.printTiempoHoras();
+	t3.printTiempoHoras();
+	t4.printTiempoHoras();
 }
