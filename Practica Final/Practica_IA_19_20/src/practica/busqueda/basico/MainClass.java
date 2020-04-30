@@ -64,7 +64,13 @@ public class MainClass {
 		// Herramientas
 		ArrayList<Herramienta> herramientas = readedHerramientas;
 		// Trabajadores
-		ArrayList<Trabajador>  trabajadores = readedTrabajadores;
+		// Al tratarse de un solo trabajador, Antonio, en esta solución básica, el array trabajadores contendrá solo a Antonio
+		ArrayList<Trabajador> trabajadores = new ArrayList<Trabajador>();
+		for(int i = 0; i < readedTrabajadores.size(); i++) {
+			if(readedTrabajadores.get(i).getNombre().equals("Antonio")) {
+				trabajadores.add(readedTrabajadores.get(i));
+			}
+		}
 		// Tareas
 		ArrayList<Tarea> tareas = readedTareas;
 
