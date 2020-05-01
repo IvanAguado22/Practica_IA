@@ -213,6 +213,11 @@ public class Trabajador {
 	    return String.format(formato, horasReales, minutosReales);
 	}
 	
+	public void cogerHerramienta(Herramienta herramienta) {
+		this.setHerramienta(herramienta);
+		herramienta.setCantidad(herramienta.getCantidad() - 1);
+	}
+	
 	public void printTrabajador() {
         System.out.println(this.nombre + " " + this.tiempoOcupado + " mins " + 
     this.herramienta.getNombre() + " " + this.herramienta.getTrabajo() + " " + this.area);
