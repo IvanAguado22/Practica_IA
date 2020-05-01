@@ -96,8 +96,26 @@ public class Node {
 	 * @return true: son iguales. false: no lo son
 	 */
 	public boolean equals(Node other) {
-		boolean check = true; // 
-		// MODIFICAR la condición para ajustarse a las necesidades del problema
+		boolean check = true;
+		// Si las unidades de trabajo de las tareas, las herramientas de los trabajadores, y las áreas donde están los trabajadores son las mismas, los nodos serán iguales
+		// Primero se comprueba si algún trabajador está en áreas distintas en cada nodo
+		for(int i = 0; i < this.trabajadores.size(); i++) {
+			if(!this.trabajadores.get(i).getArea().equals(other.trabajadores.get(i).getArea())) {
+				check = false;
+			}
+		}
+		// Viendo que están en las mismas áreas, se comprueba si alguno tiene una herramienta distinta
+		for(int i = 0; i < this.trabajadores.size(); i++) {
+			if(!this.trabajadores.get(i).getHerramienta().equals(other.trabajadores.get(i).getHerramienta())) {
+				check = false;
+			}
+		}
+		// Por último, se comprueba si las unidades de trabajo de alguna tarea es distinta
+		for(int i = 0; i < this.tareas.size(); i++) {
+			if(this.tareas.get(i).getUnidades() != other.tareas.get(i).getUnidades()) {
+				check = false;
+			}
+		}
 		return check;
 	}
 
