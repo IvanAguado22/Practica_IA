@@ -97,7 +97,24 @@ public class Node {
 	 */
 	public boolean equals(Node other) {
 		boolean check = true;
-		// Si las unidades de trabajo de las tareas, las herramientas de los trabajadores, y las áreas donde están los trabajadores son las mismas, los nodos serán iguales
+		
+		// Caso nodo meta: bastará con que las unidades de trabajo sean nulas
+		boolean goalNode = true;
+		for(int i = 0; i < this.tareas.size(); i++) {
+			if(this.tareas.get(i).getUnidades() != 0) {
+				goalNode = false;
+			}
+		}
+		for(int i = 0; i < this.tareas.size(); i++) {
+			if(other.tareas.get(i).getUnidades() != 0) {
+				goalNode = false;
+			}
+		}
+		if(goalNode) {
+			return check;
+		}
+		
+		// Resto de casos: serán iguales si los trabajadores están en las mismas áreas, con las mismas herramientas equipadas y con las mismas unidades de tarea restantes
 		// Primero se comprueba si algún trabajador está en áreas distintas en cada nodo
 		for(int i = 0; i < this.trabajadores.size(); i++) {
 			if(!this.trabajadores.get(i).getArea().equals(other.trabajadores.get(i).getArea())) {
