@@ -151,6 +151,13 @@ public class Node {
 	public void computeEvaluation() {
 		this.evaluation = this.cost + this.heuristic; 
 	}
+	
+	/**
+	 * Método auxiliar para añadir una cantidad al coste
+	 */
+	public void addCoste(double cantidad) {
+		setCoste(cost + cantidad);
+	}
 
 	/**** Getters y Setters ****/
 	/**
