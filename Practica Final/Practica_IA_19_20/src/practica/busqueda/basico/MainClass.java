@@ -120,6 +120,8 @@ public class MainClass {
 	public static void printMetrics(AStar aStar, double executionTime) {
 		System.out.println("************** IMPRESION DE METRICAS **************");
 		System.out.println("La ejecución ha tardado: "+executionTime +" segundos");
+		System.out.println("El número de nodos visitados es: " + aStar.getPath(aStar.getGoalNode()).size() + " nodos");
+		// TODO añadir resto de métricas (nodos expandidos, etc)
 	}
 
 }
