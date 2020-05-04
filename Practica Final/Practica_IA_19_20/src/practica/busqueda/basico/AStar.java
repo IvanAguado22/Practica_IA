@@ -40,6 +40,7 @@ public class AStar {
 		
 		for(int i = 0; i < trabajadores.size(); i++) {
 			Trabajador t = trabajadores.get(i);
+			
 			// Si está en el almacén y no tiene herramienta, coge la primera disponible (no consume tiempo)
 			if(t.getArea().equals("A") && t.getHerramienta()==null) {
 				for(int j = 0; j < herramientas.size(); j++) {
@@ -47,7 +48,7 @@ public class AStar {
 						t.cogerHerramienta(herramientas.get(j));
 						if(checkNode(copy)) {
 							copy.computeHeuristic(goalNode);
-							// @TODO cambiar coste si necesario
+							// TODO cambiar coste si necesario
 							copy.computeEvaluation();
 							copy.setParent(currentNode);
 							this.openList.insertAtEvaluation(copy);
