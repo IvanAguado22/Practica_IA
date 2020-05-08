@@ -32,282 +32,68 @@ public class AStar {
 	 */
 	private void addAdjacentNodes(Node currentNode) {
 		// MODIFICAR para insertar las acciones específicas del problema		
-		Node copy = new Node(currentNode);
 		
-		ArrayList<Trabajador> trabajadores  = copy.getTrabajadores();
-		ArrayList<Herramienta> herramientas = copy.getHerramientas();
-		ArrayList<Tarea> tareas             = copy.getTareas();
-		
-		for(int i = 0; i < trabajadores.size(); i++) {
-			Trabajador t = trabajadores.get(i);
+		for(int i = 0; i < currentNode.trabajadores.size(); i++) {
+			Trabajador trabajador = currentNode.trabajadores.get(i);
 			
-			// Si está en el almacén y no tiene herramienta, coge la primera disponible (no consume tiempo)
-			if(t.getArea().equals("A") && t.getHerramienta()==null) {
-				for(int j = 0; j < herramientas.size(); j++) {
-					if(herramientas.get(j).getCantidad() > 0) {
-						t.cogerHerramienta(herramientas.get(j));
-						if(checkNode(copy)) {
-							copy.computeHeuristic(goalNode);
-							// TODO cambiar coste si necesario
-							copy.computeEvaluation();
-							copy.setParent(currentNode);
-							this.openList.insertAtEvaluation(copy);
+			// Acción 1: Coger una herramienta
+			// Si no tiene una herramienta, se desplaza al almacén y coge una
+			if(trabajador.getHerramienta() == null) {
+				for(int j = 0; j < currentNode.herramientas.size(); j++) {
+					Herramienta herramienta = currentNode.herramientas.get(j);
+					Node newNode = new Node(currentNode);
+					if(!herramienta.getEquipada()) {
+						double coste = trabajador.DesplazarseHaciaA();
+						trabajador.cogerHerramienta(herramienta);
+						if(checkNode(newNode)) {
+							newNode.computeHeuristic(goalNode);
+							newNode.addCoste(coste);
+							newNode.computeEvaluation();
+							openList.insertAtEvaluation(newNode);
 						}
 					}
 				}
+			}else {
+				// Si ya no quedan más tareas por realizar del tipo de la herramienta que tiene, va al almacén y la cambia por una de la que sí queden tareas por hacer
+				boolean tareasPorHacer = false;
+				for(int j = 0; j < currentNode.tareas.size(); j++) {
+					Tarea tarea = currentNode.tareas.get(j);
+					if(tarea.getTipo().equals(trabajador.getHerramienta().getTrabajo()) && tarea.getUnidades() > 0) {
+						tareasPorHacer = true;
+					}
+				}
+				if(!tareasPorHacer) {
+					Node newNode = new Node(currentNode);
+					double coste = trabajador.DesplazarseHaciaA();
+					trabajador.dejarHerramienta();
+					if(checkNode(newNode)) {
+						newNode.computeHeuristic(goalNode);
+						newNode.addCoste(coste);
+						newNode.computeEvaluation();
+						openList.insertAtEvaluation(newNode);
+					}
+				}
 			}
 			
-			// Moverse a un área adyacente
-			switch(t.getArea()) {
-			case "A":
-				// Desde A puede moverse a 3 áreas
-				for(int j=0; j<3; j++) {
-					// Moverse a J2
-					if(j==0) {
-						t.aumentarTiempoDesp("A", "J2");
-						t.setArea("J2");
-					}
-					// Moverse a J3
-					if(j==1) {
-						t.aumentarTiempoDesp("A", "J3");
-						t.setArea("J3");
-					}
-					// Moverse a C2
-					if(j==2) {
-						t.aumentarTiempoDesp("A", "C2");
-						t.setArea("C2");
-					}
-					if(checkNode(copy)) {
-						copy.computeHeuristic(goalNode);
-						copy.addCoste(5);
-						copy.computeEvaluation();
-						copy.setParent(currentNode);
-						this.openList.insertAtEvaluation(copy);
-					}
-				}
-				break;
-			case "J2":
-				// Desde J2 puede moverse a 5 áreas
-				for(int j=0; j<5; j++) {
-					// Moverse a A
-					if(j==0) {
-						t.aumentarTiempoDespA();
-						t.setArea("A");
-					}
-					// Moverse a U
-					if(j==1) {
-						t.aumentarTiempoDesp("J2", "U");
-						t.setArea("U");
-					}
-					// Moverse a C2
-					if(j==2) {
-						t.aumentarTiempoDesp("J2", "C2");
-						t.setArea("C2");
-					}
-					// Moverse a C1
-					if(j==3) {
-						t.aumentarTiempoDesp("J2", "C1");
-						t.setArea("C1");
-					}
-					// Moverse a J1
-					if(j==4) {
-						t.aumentarTiempoDesp("J2", "J1");
-						t.setArea("J1");
-					}
-					if(checkNode(copy)) {
-						copy.computeHeuristic(goalNode);
-						copy.addCoste(5);
-						copy.computeEvaluation();
-						copy.setParent(currentNode);
-						this.openList.insertAtEvaluation(copy);
-					}
-				}
-				break;
-			case "R":
-				// Desde R solo puede moverse a 1 área
-				t.aumentarTiempoDesp("R", "J3");
-				t.setArea("J3");
-				if(checkNode(copy)) {
-					copy.computeHeuristic(goalNode);
-					copy.addCoste(5);
-					copy.computeEvaluation();
-					copy.setParent(currentNode);
-					this.openList.insertAtEvaluation(copy);
-				}
-				break;
-			case "J3":
-				// Desde J3 puede moverse a 3 áreas
-				for(int j=0; j<3; j++) {
-					// Moverse a A
-					if(j==0) {
-						t.aumentarTiempoDespA();
-						t.setArea("A");
-					}
-					// Moverse a R
-					if(j==1) {
-						t.aumentarTiempoDesp("J3", "R");
-						t.setArea("R");
-					}
-					// Moverse a C2
-					if(j==2) {
-						t.aumentarTiempoDesp("J3", "C2");
-						t.setArea("C2");
-					}
-					if(checkNode(copy)) {
-						copy.computeHeuristic(goalNode);
-						copy.addCoste(5);
-						copy.computeEvaluation();
-						copy.setParent(currentNode);
-						this.openList.insertAtEvaluation(copy);
-					}
-				}
-				break;
-			case "C2":
-				// Desde C2 se puede mover a 4 áreas
-				for(int j=0; j<4; j++) {
-					// Moverse a A
-					if(j==0) {
-						t.aumentarTiempoDespA();
-						t.setArea("A");
-					}
-					// Moverse a J3
-					if(j==1) {
-						t.aumentarTiempoDesp("C2", "J3");
-						t.setArea("J3");
-					}
-					// Moverse a J2
-					if(j==2) {
-						t.aumentarTiempoDesp("C2", "J2");
-						t.setArea("J2");
-					}
-					// Moverse a C1
-					if(j==3) {
-						t.aumentarTiempoDesp("C2", "C1");
-						t.setArea("C1");
-					}
-					if(checkNode(copy)) {
-						copy.computeHeuristic(goalNode);
-						copy.addCoste(5);
-						copy.computeEvaluation();
-						copy.setParent(currentNode);
-						this.openList.insertAtEvaluation(copy);
-					}
-				}
-				break;
-			case "C1":
-				// Desde C1 se puede mover a 3 áreas
-				for(int j=0; j<3; j++) {
-					// Moverse a J2
-					if(j==0) {
-						t.aumentarTiempoDesp("C1", "J2");
-						t.setArea("J2");
-					}
-					// Moverse a J1
-					if(j==1) {
-						t.aumentarTiempoDesp("C1", "J1");
-						t.setArea("J1");
-					}
-					// Moverse a C2
-					if(j==2) {
-						t.aumentarTiempoDesp("C1", "C2");
-						t.setArea("C2");
-					}
-					if(checkNode(copy)) {
-						copy.computeHeuristic(goalNode);
-						copy.addCoste(5);
-						copy.computeEvaluation();
-						copy.setParent(currentNode);
-						this.openList.insertAtEvaluation(copy);
-					}
-				}
-				break;
-			case "J1":
-				// Desde J1 se puede mover a 4 áreas
-				for(int j=0; j<4; j++) {
-					// Moverse a U
-					if(j==0) {
-						t.aumentarTiempoDesp("J1", "U");
-						t.setArea("U");
-					}
-					// Moverse a B
-					if(j==1) {
-						t.aumentarTiempoDesp("J1", "B");
-						t.setArea("B");
-					}
-					// Moverse a J2
-					if(j==2) {
-						t.aumentarTiempoDesp("J1", "J2");
-						t.setArea("J2");
-					}
-					// Moverse a C1
-					if(j==3) {
-						t.aumentarTiempoDesp("J1", "C1");
-						t.setArea("C1");
-					}
-					if(checkNode(copy)) {
-						copy.computeHeuristic(goalNode);
-						copy.addCoste(5);
-						copy.computeEvaluation();
-						copy.setParent(currentNode);
-						this.openList.insertAtEvaluation(copy);
-					}
-				}
-				break;
-			case "U":
-				// Desde U se puede mover a 3 áreas
-				for(int j=0; j<3; j++) {
-					// Moverse a B
-					if(j==0) {
-						t.aumentarTiempoDesp("U", "B");
-						t.setArea("B");
-					}
-					// Moverse a J1
-					if(j==1) {
-						t.aumentarTiempoDesp("U", "J1");
-						t.setArea("J1");
-					}
-					// Moverse a J2
-					if(j==2) {
-						t.aumentarTiempoDesp("U", "J2");
-						t.setArea("J2");
-					}
-					if(checkNode(copy)) {
-						copy.computeHeuristic(goalNode);
-						copy.addCoste(5);
-						copy.computeEvaluation();
-						copy.setParent(currentNode);
-						this.openList.insertAtEvaluation(copy);
-					}
-				}
-				break;
-			case "B":
-				// Desde B se puede mover a 2 áreas
-				for(int j=0; j<2; j++) {
-					// Moverse a U
-					if(j==0) {
-						t.aumentarTiempoDesp("B", "U");
-						t.setArea("U");
-					}
-					// Moverse a J1
-					if(j==1) {
-						t.aumentarTiempoDesp("B", "J1");
-						t.setArea("J1");
-					}
-					if(checkNode(copy)) {
-						copy.computeHeuristic(goalNode);
-						copy.addCoste(5);
-						copy.computeEvaluation();
-						copy.setParent(currentNode);
-						this.openList.insertAtEvaluation(copy);
-					}
-				}
-				break;
-			default:
-				break;
-			}
 			
-			// Realizar una tarea con la herramienta que tiene y el area donde está, si puede
+			// Acción 2: Realizar una tarea
+			for(int j = 0; j < currentNode.tareas.size(); j++) {
+				Tarea tarea = currentNode.tareas.get(j);
+				Node newNode = new Node(currentNode);
+				if(tarea.getTipo().equals(trabajador.getHerramienta().getTrabajo()) && tarea.getUnidades() > 0) {
+					double coste = trabajador.Desplazarse(trabajador.getArea(), tarea.getArea());
+					coste += trabajador.RealizarTarea();
+					if(checkNode(newNode)) {
+						newNode.computeHeuristic(goalNode);
+						newNode.addCoste(coste);
+						newNode.computeEvaluation();
+						openList.insertAtEvaluation(newNode);
+					}
+				}
+			}
+		
 		}
+		
 		
 	}
 	

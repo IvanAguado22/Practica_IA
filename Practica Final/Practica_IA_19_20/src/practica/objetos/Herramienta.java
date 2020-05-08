@@ -16,6 +16,8 @@ public class Herramienta {
 	int mejora;
 	int cantidad;
 	// AÑADIR LAS VARIABLES NECESARIAS
+	boolean equipada;
+	int id;
 
 	/**
 	 * Constructor para el objeto
@@ -29,6 +31,17 @@ public class Herramienta {
 		this.cantidad = cantidad;
 		// Añadir el estado inicial (estático) de las variables que se añadan
 		// Si se necesita añadir valores variables, como un ID, utilizar setters
+		this.equipada = false;
+	}
+	
+	public Herramienta(Herramienta original) {
+		if(original != null) {
+			this.nombre = original.getNombre();
+			this.trabajo = original.getTrabajo();
+			this.peso = original.getPeso();
+			this.mejora = original.getMejora();
+			this.cantidad = original.getCantidad();
+		}
 	}
 
 	/**
@@ -66,5 +79,17 @@ public class Herramienta {
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}	
+	public boolean getEquipada() {
+		return equipada;
+	}
+	public void setEquipada(boolean valor) {
+		this.equipada = valor;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 
 }

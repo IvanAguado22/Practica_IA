@@ -16,7 +16,7 @@ public class Trabajador {
 	int habReparar;
 	Herramienta herramienta;
 	String area;
-	int tiempoOcupado;
+	double tiempoOcupado;
 	Tarea tarea;
 	// AÑADIR LAS VARIABLES NECESARIAS
 
@@ -205,27 +205,189 @@ public class Trabajador {
 				break;
 		}		
 	}
+	
+	public double DesplazarseHaciaA() {
+		double coste = 0;
+		switch(this.area) {
+			case "R":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "J3":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "C2":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "J2":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "U":
+				coste =  10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "C1":
+				coste =  10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "J1":
+				coste =  10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "B":
+				coste = 15 + (this.herramienta.getPeso() * 3);	
+				break;
+			default:
+				break;
+		}
+		this.tiempoOcupado += coste;
+		this.setArea("A");
+		return coste;
+	}
+	
+	public double Desplazarse(String origen, String destino) {
+		double coste = 0;
+		if(destino != "A") {
+			switch(origen + destino) {
+			case "AR":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "AJ3":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "AC2":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "AJ2":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "AU":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "AC1":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "AJ1":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "AB":
+				coste = 15 + (this.herramienta.getPeso() * 3);
+				break;
+			case "UR":
+				coste = 20 + (this.herramienta.getPeso() * 4);
+				break;
+			case "C2R":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "C2U":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "C2J1":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "C2J2":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "C2J3":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "J1J2":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "J1J3":
+				coste = 15 + (this.herramienta.getPeso() * 3);
+				break;
+			case "J3J2":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "BU":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "J1U":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "J2U":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "BC2":
+				coste = 15 + (this.herramienta.getPeso() * 3);
+				break;
+			case "BJ1":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "BJ2":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			default:
+				break;
+			}
+		}
+		this.tiempoOcupado += coste;
+		this.setArea(destino);
+		return coste;
+	}
+	
+	public double RealizarTarea() {
+		double coste = 0;
+		switch(this.herramienta.getTrabajo()) {
+			case "limpiar":
+				while(this.tarea.getUnidades() > 0) {
+					if(this.tarea.getUnidades() >= (this.habLimpiar + this.herramienta.getMejora() )) {
+						coste += 60;
+						this.tiempoOcupado += 60;
+					}else {
+						this.tiempoOcupado += (60*this.tarea.getUnidades()) / (this.habLimpiar + this.herramienta.getMejora());
+					}
+					this.tarea.setUnidades(this.tarea.getUnidades() - this.habLimpiar - this.herramienta.getMejora());				
+				}
+				break;
+			case "podar":
+				while(this.tarea.getUnidades() > 0) {
+					if(this.tarea.getUnidades() >= (this.habPodar + this.herramienta.getMejora() )) {
+						this.tiempoOcupado += 60;
+					}else {
+						this.tiempoOcupado += (60*this.tarea.getUnidades())/ (this.habPodar + this.herramienta.getMejora());
+					}
+					this.tarea.setUnidades(this.tarea.getUnidades() - this.habPodar -  this.herramienta.getMejora());				
+				}
+				break;
+			case "reparar":
+				while(this.tarea.getUnidades() > 0) {
+					if(this.tarea.getUnidades() >= (this.habReparar + this.herramienta.getMejora() )) {
+						this.tiempoOcupado += 60;
+					}else {
+						this.tiempoOcupado += (60*this.tarea.getUnidades()) / (this.habReparar + this.herramienta.getMejora());
+					}
+					this.tarea.setUnidades(this.tarea.getUnidades() - this.habReparar -  this.herramienta.getMejora());				
+				}
+				break;
+			default: 
+				break;
+		}
+		return coste;
+	}
+	
+	public void cogerHerramienta(Herramienta herramienta) {
+		setHerramienta(herramienta);
+		herramienta.setEquipada(true);
+	}
+	
+	public void dejarHerramienta() {
+		this.herramienta.setEquipada(false);
+		setHerramienta(null);
+	}
 
-	public String formatearMinutosAHoraMinuto(int minutos) {
+	/*public String formatearMinutosAHoraMinuto(int minutos) {
 	    String formato = "%02d:%02d";
 	    long horasReales = TimeUnit.MINUTES.toHours(minutos);
 	    long minutosReales = TimeUnit.MINUTES.toMinutes(minutos) - TimeUnit.HOURS.toMinutes(TimeUnit.MINUTES.toHours(minutos));
 	    return String.format(formato, horasReales, minutosReales);
-	}
-	
-	public void cogerHerramienta(Herramienta herramienta) {
-		this.setHerramienta(herramienta);
-		herramienta.setCantidad(herramienta.getCantidad() - 1);
-	}
+	}*/
 	
 	public void printTrabajador() {
         System.out.println(this.nombre + " " + this.tiempoOcupado + " mins " + 
     this.herramienta.getNombre() + " " + this.herramienta.getTrabajo() + " " + this.area);
     }
 	
-	public void printTiempoHoras() {
+	/*public void printTiempoHoras() {
 		System.out.println(this.nombre + " " + "ha trabajado" + " " + formatearMinutosAHoraMinuto(this.tiempoOcupado) + " " + "horas");
-	}
+	}*/
 	
 	public String getNombre() {
 		return nombre;
@@ -263,10 +425,10 @@ public class Trabajador {
 	public void setArea(String area) {
 		this.area = area;
 	}
-	public int getTiempoOcupado() {
+	public double getTiempoOcupado() {
 		return tiempoOcupado;
 	}
-	public void setTiempoOcupado(int tiempoOcupado) {
+	public void setTiempoOcupado(double tiempoOcupado) {
 		this.tiempoOcupado = tiempoOcupado;
 	}
 	public Tarea getTarea() {

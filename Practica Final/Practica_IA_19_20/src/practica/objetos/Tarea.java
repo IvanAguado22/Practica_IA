@@ -28,6 +28,14 @@ public class Tarea {
 		// Si se necesita añadir valores variables, como un ID, utilizar setters
 	}
 	
+	public Tarea(Tarea original) {
+		if(original != null) {
+			this.tipo = original.getTipo();
+			this.area = original.getArea();
+			this.unidades = original.getUnidades();
+		}
+	}
+	
 	// Métodos getters y setters
 	/**
 	 * Añadir (si procede) métodos auxiliares, como getters o setters

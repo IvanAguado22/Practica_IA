@@ -56,6 +56,12 @@ public class Node {
 		for (int i = 0; i < original.trabajadores.size(); i++) {
 			Trabajador trabajador = new Trabajador(original.trabajadores.get(i).getNombre(), original.trabajadores.get(i).getHabPodar(), original.trabajadores.get(i).getHabLimpiar(), original.trabajadores.get(i).getHabReparar());
 			trabajadores.add(trabajador);
+			Herramienta herramienta = new Herramienta(original.trabajadores.get(i).getHerramienta());
+			trabajador.setHerramienta(herramienta);
+			trabajador.setArea(original.trabajadores.get(i).getArea());
+			trabajador.setTiempoOcupado(original.trabajadores.get(i).getTiempoOcupado());
+			Tarea tarea = new Tarea(original.trabajadores.get(i).getTarea());
+			trabajador.setTarea(tarea);
 		}
 		this.trabajadores = trabajadores;
 		ArrayList<Herramienta> herramientas = new ArrayList<Herramienta>();
@@ -84,8 +90,16 @@ public class Node {
 	 * this.heuristica  - Resultado
 	 */
 	public void computeHeuristic(Node finalNode) {
-		// MODIFICAR para ajustarse a las necesidades del problema
+		// Heurística muy básica: las tareas restantes por hacer
+		
 		this.heuristic = 0;
+		
+		for(int i = 0; i < this.tareas.size(); i++) {
+			if(this.tareas.get(i).getUnidades() > 0) {
+				this.heuristic++;
+			}
+		}
+		
 	}
 
 	/**
