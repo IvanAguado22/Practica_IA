@@ -82,6 +82,7 @@ public class AStar {
 				Node newNode = new Node(currentNode);
 				if(tarea.getTipo().equals(trabajador.getHerramienta().getTrabajo()) && tarea.getUnidades() > 0) {
 					double coste = trabajador.Desplazarse(trabajador.getArea(), tarea.getArea());
+					trabajador.setTarea(tarea);
 					coste += trabajador.RealizarTarea();
 					if(checkNode(newNode)) {
 						newNode.computeHeuristic(goalNode);

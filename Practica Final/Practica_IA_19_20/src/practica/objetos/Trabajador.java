@@ -330,9 +330,8 @@ public class Trabajador {
 				while(this.tarea.getUnidades() > 0) {
 					if(this.tarea.getUnidades() >= (this.habLimpiar + this.herramienta.getMejora() )) {
 						coste += 60;
-						this.tiempoOcupado += 60;
 					}else {
-						this.tiempoOcupado += (60*this.tarea.getUnidades()) / (this.habLimpiar + this.herramienta.getMejora());
+						coste += (60*this.tarea.getUnidades()) / (this.habLimpiar + this.herramienta.getMejora());
 					}
 					this.tarea.setUnidades(this.tarea.getUnidades() - this.habLimpiar - this.herramienta.getMejora());				
 				}
@@ -340,25 +339,29 @@ public class Trabajador {
 			case "podar":
 				while(this.tarea.getUnidades() > 0) {
 					if(this.tarea.getUnidades() >= (this.habPodar + this.herramienta.getMejora() )) {
-						this.tiempoOcupado += 60;
+						coste += 60;
 					}else {
-						this.tiempoOcupado += (60*this.tarea.getUnidades())/ (this.habPodar + this.herramienta.getMejora());
+						coste += (60*this.tarea.getUnidades())/ (this.habPodar + this.herramienta.getMejora());
 					}
-					this.tarea.setUnidades(this.tarea.getUnidades() - this.habPodar -  this.herramienta.getMejora());				
+					this.tarea.setUnidades(this.tarea.getUnidades() - this.habPodar - this.herramienta.getMejora());			
 				}
 				break;
 			case "reparar":
 				while(this.tarea.getUnidades() > 0) {
 					if(this.tarea.getUnidades() >= (this.habReparar + this.herramienta.getMejora() )) {
-						this.tiempoOcupado += 60;
+						coste += 60;
 					}else {
-						this.tiempoOcupado += (60*this.tarea.getUnidades()) / (this.habReparar + this.herramienta.getMejora());
+						coste += (60*this.tarea.getUnidades()) / (this.habReparar + this.herramienta.getMejora());
 					}
-					this.tarea.setUnidades(this.tarea.getUnidades() - this.habReparar -  this.herramienta.getMejora());				
+					this.tarea.setUnidades(this.tarea.getUnidades() - this.habReparar - this.herramienta.getMejora());				
 				}
 				break;
 			default: 
 				break;
+		}
+		this.tiempoOcupado += coste;
+		if(this.tarea.getUnidades() < 0) {
+			this.tarea.setUnidades(0);
 		}
 		return coste;
 	}
