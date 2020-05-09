@@ -55,18 +55,19 @@ public class Node {
 		ArrayList<Trabajador> trabajadores = new ArrayList<Trabajador>();
 		for (int i = 0; i < original.trabajadores.size(); i++) {
 			Trabajador trabajador = new Trabajador(original.trabajadores.get(i).getNombre(), original.trabajadores.get(i).getHabPodar(), original.trabajadores.get(i).getHabLimpiar(), original.trabajadores.get(i).getHabReparar());
-			trabajadores.add(trabajador);
 			Herramienta herramienta = new Herramienta(original.trabajadores.get(i).getHerramienta());
 			trabajador.setHerramienta(herramienta);
 			trabajador.setArea(original.trabajadores.get(i).getArea());
 			trabajador.setTiempoOcupado(original.trabajadores.get(i).getTiempoOcupado());
 			Tarea tarea = new Tarea(original.trabajadores.get(i).getTarea());
 			trabajador.setTarea(tarea);
+			trabajadores.add(trabajador);
 		}
 		this.trabajadores = trabajadores;
 		ArrayList<Herramienta> herramientas = new ArrayList<Herramienta>();
 		for (int i = 0; i < original.herramientas.size(); i++) {
 			Herramienta herramienta = new Herramienta(original.herramientas.get(i).getNombre(), original.herramientas.get(i).getTrabajo(), original.herramientas.get(i).getPeso(), original.herramientas.get(i).getMejora(), original.herramientas.get(i).getCantidad());
+			herramienta.setId(original.herramientas.get(i).getId());
 			herramientas.add(herramienta);
 		}
 		this.herramientas = herramientas;
