@@ -80,15 +80,17 @@ public class AStar {
 			for(int j = 0; j < currentNode.tareas.size(); j++) {
 				Tarea tarea = currentNode.tareas.get(j);
 				Node newNode = new Node(currentNode);
-				if(tarea.getTipo().equals(trabajador.getHerramienta().getTrabajo()) && tarea.getUnidades() > 0) {
-					double coste = trabajador.Desplazarse(trabajador.getArea(), tarea.getArea());
-					trabajador.setTarea(tarea);
-					coste += trabajador.RealizarTarea();
-					if(checkNode(newNode)) {
-						newNode.computeHeuristic(goalNode);
-						newNode.addCoste(coste);
-						newNode.computeEvaluation();
-						openList.insertAtEvaluation(newNode);
+				if(trabajador.getHerramienta() != null) {
+					if(tarea.getTipo().equals(trabajador.getHerramienta().getTrabajo()) && tarea.getUnidades() > 0) {
+						double coste = trabajador.Desplazarse(trabajador.getArea(), tarea.getArea());
+						trabajador.setTarea(tarea);
+						coste += trabajador.RealizarTarea();
+						if(checkNode(newNode)) {
+							newNode.computeHeuristic(goalNode);
+							newNode.addCoste(coste);
+							newNode.computeEvaluation();
+							openList.insertAtEvaluation(newNode);
+						}
 					}
 				}
 			}

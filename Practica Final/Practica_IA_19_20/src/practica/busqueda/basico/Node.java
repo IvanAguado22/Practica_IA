@@ -157,7 +157,23 @@ public class Node {
 	 * @param printDebug. Permite seleccionar cuántos mensajes imprimir
 	 */
 	public void printNodeData(int printDebug) {
-		
+		// Se imprime, para cada trabajador, dónde está, qué herramienta lleva y el tiempo que lleva trabajando. También se imprime el número 
+		// de tareas restantes por hacer
+		for(int i = 0; i < this.trabajadores.size(); i++) {
+			Trabajador trabajador = this.trabajadores.get(i);
+			if(trabajador.getHerramienta() == null) {
+				System.out.println(trabajador.getNombre() + " está en " + trabajador.getArea() + ", sin herramienta " + " y lleva trabajando " + trabajador.getTiempoOcupado() + " minutos.");
+			}else {
+				System.out.println(trabajador.getNombre() + " está en " + trabajador.getArea() + ", con herramienta " + trabajador.getHerramienta().getNombre() + " y lleva trabajando " + trabajador.getTiempoOcupado() + " minutos.");
+			}
+		}
+		int tareasRestantes = 0;
+		for(int i = 0; i < this.tareas.size(); i++) {
+			if(tareas.get(i).getUnidades() > 0) {
+				tareasRestantes++;
+			}
+		}
+		System.out.println("Quedan " + tareasRestantes + " tareas restantes por hacer.");
 	}
 
 	/**

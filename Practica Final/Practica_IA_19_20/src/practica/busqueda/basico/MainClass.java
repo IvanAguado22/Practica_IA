@@ -50,8 +50,8 @@ public class MainClass {
 		else isJSON = LectorJSON.class.getResourceAsStream(problemPath); // Se busca en el path de LectorJSON dicho fichero
 		LectorJSON lectorJSON = new LectorJSON();
 		lectorJSON.readJSON(isJSON);
-		
-		for(Herramienta herramienta : lectorJSON.getHerramientas()) {
+		// Se crean todas las herramientas repetidas en función de la cantidad. Por ejemplo, si hay 4 destornilladores se crean otros 3 únicos
+		/*for(Herramienta herramienta : lectorJSON.getHerramientas()) {
 			if(herramienta.getCantidad() > 1) {
 				for(int i = 0; i < herramienta.getCantidad()-1; i++) {
 					Herramienta nuevaHerramienta = new Herramienta(herramienta);
@@ -61,7 +61,7 @@ public class MainClass {
 		}
 		for(int i = 0; i < lectorJSON.getHerramientas().size(); i++) {
 			lectorJSON.getHerramientas().get(i).setId(i);
-		}
+		}*/
 		ArrayList<Herramienta> readedHerramientas = lectorJSON.getHerramientas();
 		ArrayList<Trabajador>  readedTrabajadores = lectorJSON.getTrabajadores();
 		ArrayList<Tarea>       readedTareas       = lectorJSON.getTareas();
