@@ -455,22 +455,31 @@ public class Trabajador {
 		this.herramienta.setEquipada(false);
 		setHerramienta(null);
 	}
-
-	/*public String formatearMinutosAHoraMinuto(int minutos) {
-	    String formato = "%02d:%02d";
-	    long horasReales = TimeUnit.MINUTES.toHours(minutos);
-	    long minutosReales = TimeUnit.MINUTES.toMinutes(minutos) - TimeUnit.HOURS.toMinutes(TimeUnit.MINUTES.toHours(minutos));
-	    return String.format(formato, horasReales, minutosReales);
-	}*/
 	
+	public void finTarea() {
+		this.tarea = null;
+	}
+	
+	 public static double redondearDecimales(double valorInicial, int numeroDecimales) {
+	        double parteEntera, resultado;
+	        resultado = valorInicial;
+	        parteEntera = Math.floor(resultado);
+	        resultado=(resultado-parteEntera)*Math.pow(10, numeroDecimales);
+	        resultado=Math.round(resultado);
+	        resultado=(resultado/Math.pow(10, numeroDecimales))+parteEntera;
+	        return resultado;
+	    }
+
 	public void printTrabajador() {
         System.out.println(this.nombre + " " + this.tiempoOcupado + " mins " + 
     this.herramienta.getNombre() + " " + this.herramienta.getTrabajo() + " " + this.area);
     }
 	
-	/*public void printTiempoHoras() {
-		System.out.println(this.nombre + " " + "ha trabajado" + " " + formatearMinutosAHoraMinuto(this.tiempoOcupado) + " " + "horas");
-	}*/
+	public void printTiempoHoras() {
+		double tiempoHoras = this.tiempoOcupado/60;
+		tiempoHoras = redondearDecimales(tiempoHoras, 3);
+		System.out.println(this.nombre + " " + "ha trabajado" + " " + tiempoHoras + " " + "horas");
+	}
 	
 	public String getNombre() {
 		return nombre;

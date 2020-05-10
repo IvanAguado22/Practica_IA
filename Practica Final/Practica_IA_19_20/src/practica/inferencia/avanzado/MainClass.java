@@ -18,7 +18,18 @@ import practica.objetos.Trabajador;
  * @author David Sánchez Pedroche
  */
 
+
 public class MainClass {
+	
+	public static double redondearDecimales(double valorInicial, int numeroDecimales) {
+	    double parteEntera, resultado;
+	    resultado = valorInicial;
+	    parteEntera = Math.floor(resultado);
+	    resultado=(resultado-parteEntera)*Math.pow(10, numeroDecimales);
+	    resultado=Math.round(resultado);
+	    resultado=(resultado/Math.pow(10, numeroDecimales))+parteEntera;
+	    return resultado;
+	}
 
 	public static void main(java.lang.String[] args) throws IOException {
 	
@@ -108,6 +119,10 @@ public class MainClass {
 	 */
 	public static void printState(ArrayList<Herramienta> herramientas, ArrayList<Trabajador> trabajadores, ArrayList<Tarea> tareas) {
 		System.out.println("************** IMPRESION DEL ESTADO **************");
+		for (int i = 0; i < trabajadores.size(); i++) {
+			Trabajador t1 = (trabajadores.get(i));
+			System.out.println(t1.getNombre() + " ha trabajado " + redondearDecimales(t1.getTiempoOcupado()/60, 3) + " horas");
+		}
 	}
 
 	/**
