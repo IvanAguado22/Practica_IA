@@ -95,7 +95,6 @@ public class Node {
 	 * this.heuristica  - Resultado
 	 */
 	public void computeHeuristic(Node finalNode) {
-		// Heurística muy básica: las tareas restantes por hacer
 		this.heuristic = 0;
 		
 		for(int i = 0; i < this.tareas.size(); i++) {
@@ -116,8 +115,8 @@ public class Node {
 					}
 				}
 			}
+			this.heuristic += costeDesplazar;
 		}
-		this.heuristic += costeDesplazar;
 	}
 
 	/**

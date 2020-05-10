@@ -2,6 +2,7 @@ package practica.busqueda.avanzado;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import practica.objetos.Herramienta;
 import practica.objetos.Tarea;
 import practica.objetos.Trabajador;
@@ -31,9 +32,66 @@ public class AStar {
 	 */
 	private void addAdjacentNodes(Node currentNode) {
 		// MODIFICAR para insertar las acciones específicas del problema
-		ArrayList<Trabajador> trabajadores  = currentNode.getTrabajadores();
-		ArrayList<Herramienta> herramientas = currentNode.getHerramientas();
-		ArrayList<Tarea> tareas             = currentNode.getTareas();
+		for(int i = 0; i < currentNode.trabajadores.size(); i++) {
+			Trabajador trabajador = currentNode.trabajadores.get(i);
+			
+			// Acción 1: Coger una herramienta
+			// Si no tiene una herramienta, se desplaza al almacén y coge una
+			if(trabajador.getHerramienta() == null) {
+				for(int j = 0; j < currentNode.herramientas.size(); j++) {
+					Herramienta herramienta = currentNode.herramientas.get(j);
+					Node newNode = new Node(currentNode);
+					newNode.setNodeListNull();
+					if(!herramienta.getEquipada()) {
+						double coste = newNode.trabajadores.get(i).DesplazarseHaciaA();
+						newNode.trabajadores.get(i).cogerHerramienta(newNode.herramientas.get(j));
+						newNode.computeHeuristic(goalNode);
+						newNode.addCoste(coste);
+						newNode.computeEvaluation();
+						openList.insertAtEvaluation(newNode);
+					}
+				}
+			}else {
+				// Si ya no quedan más tareas por realizar del tipo de la herramienta que tiene, va al almacén y la suelta
+				boolean tareasPorHacer = false;
+				for(int j = 0; j < currentNode.tareas.size(); j++) {
+					Tarea tarea = currentNode.tareas.get(j);
+					if(tarea.getTipo().equals(trabajador.getHerramienta().getTrabajo()) && tarea.getUnidades() > 0) {
+						tareasPorHacer = true;
+					}
+				}
+				if(!tareasPorHacer) {
+					Node newNode = new Node(currentNode);
+					newNode.setNodeListNull();
+					double coste = newNode.trabajadores.get(i).DesplazarseHaciaA();
+					newNode.trabajadores.get(i).dejarHerramienta();
+					newNode.computeHeuristic(goalNode);
+					newNode.addCoste(coste);
+					newNode.computeEvaluation();
+					openList.insertAtEvaluation(newNode);
+				}
+			}
+			
+			
+			// Acción 2: Realizar una tarea
+			for(int j = 0; j < currentNode.tareas.size(); j++) {
+				Tarea tarea = currentNode.tareas.get(j);
+				Node newNode = new Node(currentNode);
+				newNode.setNodeListNull();
+				if(trabajador.getHerramienta() != null) {
+					if(tarea.getTipo().equals(trabajador.getHerramienta().getTrabajo()) && tarea.getUnidades() > 0) {
+						double coste = newNode.trabajadores.get(i).Desplazarse(trabajador.getArea(), tarea.getArea());
+						newNode.trabajadores.get(i).setTarea(tarea);
+						coste += newNode.trabajadores.get(i).RealizarTarea();
+						newNode.computeHeuristic(goalNode);
+						newNode.addCoste(coste);
+						newNode.computeEvaluation();
+						openList.insertAtEvaluation(newNode);
+					}
+				}
+			}
+		
+		}
 	}
 	
 	/**

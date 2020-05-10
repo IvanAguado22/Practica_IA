@@ -53,7 +53,7 @@ public class AStar {
 					}
 				}
 			}else {
-				// Si ya no quedan más tareas por realizar del tipo de la herramienta que tiene, va al almacén y la cambia por una de la que sí queden tareas por hacer
+				// Si ya no quedan más tareas por realizar del tipo de la herramienta que tiene, va al almacén y la suelta
 				boolean tareasPorHacer = false;
 				for(int j = 0; j < currentNode.tareas.size(); j++) {
 					Tarea tarea = currentNode.tareas.get(j);

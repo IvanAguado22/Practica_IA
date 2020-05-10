@@ -62,7 +62,19 @@ public class MainClass {
 		
 		
 		// Herramientas
-		ArrayList<Herramienta> herramientas = readedHerramientas;
+		ArrayList<Herramienta> herramientas = new ArrayList<Herramienta>();
+		// Se crean todas las herramientas repetidas en función de la cantidad. Por ejemplo, si hay 4 destornilladores se crean otros 3 únicos
+		for(Herramienta herramienta : readedHerramientas) {
+			if(herramienta.getCantidad() > 1) {
+				for(int i = 0; i < herramienta.getCantidad()-1; i++) {
+					Herramienta nuevaHerramienta = new Herramienta(herramienta);
+					herramientas.add(nuevaHerramienta);
+				}
+			}
+		}
+		for(int i = 0; i < readedHerramientas.size(); i++) {
+			herramientas.get(i).setId(i);
+		}
 		// Trabajadores
 		ArrayList<Trabajador>  trabajadores = readedTrabajadores;
 		// Tareas
@@ -111,6 +123,7 @@ public class MainClass {
 	public static void printMetrics(AStar aStar, double executionTime) {
 		System.out.println("************** IMPRESION DE METRICAS **************");
 		System.out.println("La ejecución ha tardado: "+executionTime +" segundos");
+		System.out.println("El número de nodos visitados es: " + aStar.getPath(aStar.getGoalNode()).size() + " nodos");
 	}
 
 }

@@ -55,12 +55,23 @@ public class Node {
 		ArrayList<Trabajador> trabajadores = new ArrayList<Trabajador>();
 		for (int i = 0; i < original.trabajadores.size(); i++) {
 			Trabajador trabajador = new Trabajador(original.trabajadores.get(i).getNombre(), original.trabajadores.get(i).getHabPodar(), original.trabajadores.get(i).getHabLimpiar(), original.trabajadores.get(i).getHabReparar());
+			if(original.trabajadores.get(i).getHerramienta() != null) {
+				Herramienta herramienta = new Herramienta(original.trabajadores.get(i).getHerramienta());
+				trabajador.setHerramienta(herramienta);
+			}
+			trabajador.setArea(original.trabajadores.get(i).getArea());
+			trabajador.setTiempoOcupado(original.trabajadores.get(i).getTiempoOcupado());
+			if(original.trabajadores.get(i).getTarea() != null) {
+				Tarea tarea = new Tarea(original.trabajadores.get(i).getTarea());
+				trabajador.setTarea(tarea);
+			}
 			trabajadores.add(trabajador);
 		}
 		this.trabajadores = trabajadores;
 		ArrayList<Herramienta> herramientas = new ArrayList<Herramienta>();
 		for (int i = 0; i < original.herramientas.size(); i++) {
 			Herramienta herramienta = new Herramienta(original.herramientas.get(i).getNombre(), original.herramientas.get(i).getTrabajo(), original.herramientas.get(i).getPeso(), original.herramientas.get(i).getMejora(), original.herramientas.get(i).getCantidad());
+			herramienta.setId(original.herramientas.get(i).getId());
 			herramientas.add(herramienta);
 		}
 		this.herramientas = herramientas;
@@ -84,8 +95,28 @@ public class Node {
 	 * this.heuristica  - Resultado
 	 */
 	public void computeHeuristic(Node finalNode) {
-		// MODIFICAR para ajustarse a las necesidades del problema
 		this.heuristic = 0;
+		
+		for(int i = 0; i < this.tareas.size(); i++) {
+			this.heuristic += 60 * this.tareas.get(i).getUnidades();
+		}
+		
+		double costeDesplazar = 0;
+		for(int i = 0; i < this.trabajadores.size(); i++) {
+			for(int j = 0; j < this.tareas.size(); j++) {
+				if(this.trabajadores.get(i).getHerramienta() != null) {
+					if(this.trabajadores.get(i).getHerramienta().getTrabajo().equals(this.tareas.get(j).getTipo())) {
+						if((j + i*this.tareas.size()) == 0) {
+							costeDesplazar = this.trabajadores.get(i).TiempoEnDesplazarse(this.trabajadores.get(i).getArea(), this.tareas.get(j).getArea());
+						}
+						if(costeDesplazar > this.trabajadores.get(i).TiempoEnDesplazarse(this.trabajadores.get(i).getArea(), this.tareas.get(j).getArea())) {
+							costeDesplazar = this.trabajadores.get(i).TiempoEnDesplazarse(this.trabajadores.get(i).getArea(), this.tareas.get(j).getArea());
+						}
+					}
+				}
+			}
+			this.heuristic += costeDesplazar;
+		}
 	}
 
 	/**
@@ -96,9 +127,38 @@ public class Node {
 	 * @return true: son iguales. false: no lo son
 	 */
 	public boolean equals(Node other) {
-		boolean check = true; // 
-		// MODIFICAR la condición para ajustarse a las necesidades del problema
-		return check;
+		// Que todas las tareas tengan las mismas unidades
+		for(int i = 0; i < this.tareas.size(); i++) {
+			if(this.tareas.get(i).getUnidades() != other.tareas.get(i).getUnidades()) {
+				return false;
+			}
+		}
+		// Que todos los trabajadores hayan trabajado el mismo tiempo, están en los mismos sitios y con las mismas herramientas
+		for(int i = 0; i < this.trabajadores.size(); i++) {
+			if(this.trabajadores.get(i).getTiempoOcupado() != other.trabajadores.get(i).getTiempoOcupado()) {
+				return false;
+			}
+			if(!this.trabajadores.get(i).getArea().equals(other.trabajadores.get(i).getArea())) {
+				return false;
+			}
+			if(this.trabajadores.get(i).getHerramienta() != null && other.trabajadores.get(i).getHerramienta() != null) {
+				if(this.trabajadores.get(i).getHerramienta().getId() != other.trabajadores.get(i).getHerramienta().getId()) {
+					return false;
+				}
+			}else if(this.trabajadores.get(i).getHerramienta() != null && other.trabajadores.get(i).getHerramienta() == null) {
+				return false;
+			}else if(this.trabajadores.get(i).getHerramienta() == null && other.trabajadores.get(i).getHerramienta() != null) {
+				return false;
+			}
+		}
+		// Que las herramientas estén en los mismos sitios
+		for(int i = 0; i < this.tareas.size(); i++) {
+			if(this.herramientas.get(i).getArea().equals(other.herramientas.get(i).getArea())) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 
@@ -107,7 +167,25 @@ public class Node {
 	 * @param printDebug. Permite seleccionar cuántos mensajes imprimir
 	 */
 	public void printNodeData(int printDebug) {
-		
+		// Se imprime, para cada trabajador, dónde está, qué herramienta lleva y el tiempo que lleva trabajando. También se imprime el número 
+		// de tareas restantes por hacer
+		for(int i = 0; i < this.trabajadores.size(); i++) {
+			Trabajador trabajador = this.trabajadores.get(i);
+			if(trabajador.getHerramienta() == null) {
+				System.out.println(trabajador.getNombre() + " está en " + trabajador.getArea() + ", sin herramienta y lleva trabajando " + trabajador.getTiempoOcupado() + " minutos.");
+			}else {
+				System.out.println(trabajador.getNombre() + " está en " + trabajador.getArea() + ", con herramienta " + trabajador.getHerramienta().getNombre() + " y lleva trabajando " + trabajador.getTiempoOcupado() + " minutos.");
+			}
+		}
+		int tareasRestantes = 0;
+		for(int i = 0; i < this.tareas.size(); i++) {
+			if(tareas.get(i).getUnidades() > 0) {
+				tareasRestantes++;
+			}
+		}
+		System.out.println("Quedan " + tareasRestantes + " tareas restantes por hacer.");
+		System.out.println("H(n): " + this.heuristic + "; C(n): " + this.cost + "; E(n): " + this.evaluation);
+		System.out.println();
 	}
 
 	/**
@@ -115,6 +193,14 @@ public class Node {
 	 */
 	public void computeEvaluation() {
 		this.evaluation = this.cost + this.heuristic; 
+	}
+	
+	public void addCoste(double cantidad) {
+		setCoste(cost + cantidad);
+	}
+	
+	public void setNodeListNull() {
+		this.nextNodeList = null;
 	}
 
 	/**** Getters y Setters ****/
