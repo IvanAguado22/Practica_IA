@@ -323,6 +323,86 @@ public class Trabajador {
 		return coste;
 	}
 	
+	public double TiempoEnDesplazarse(String origen, String destino) {
+		double coste = 0;
+		if(destino != "A") {
+			switch(origen + destino) {
+			case "AR":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "AJ3":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "AC2":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "AJ2":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "AU":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "AC1":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "AJ1":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "AB":
+				coste = 15 + (this.herramienta.getPeso() * 3);
+				break;
+			case "UR":
+				coste = 20 + (this.herramienta.getPeso() * 4);
+				break;
+			case "C2R":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "C2U":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "C2J1":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "C2J2":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "C2J3":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "J1J2":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "J1J3":
+				coste = 15 + (this.herramienta.getPeso() * 3);
+				break;
+			case "J3J2":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			case "BU":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "J1U":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "J2U":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "BC2":
+				coste = 15 + (this.herramienta.getPeso() * 3);
+				break;
+			case "BJ1":
+				coste = 5 + this.herramienta.getPeso();
+				break;
+			case "BJ2":
+				coste = 10 + (this.herramienta.getPeso() * 2);
+				break;
+			default:
+				break;
+			}
+		}
+		return coste;
+	}
+	
 	public double RealizarTarea() {
 		double coste = 0;
 		switch(this.herramienta.getTrabajo()) {

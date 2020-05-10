@@ -55,12 +55,16 @@ public class Node {
 		ArrayList<Trabajador> trabajadores = new ArrayList<Trabajador>();
 		for (int i = 0; i < original.trabajadores.size(); i++) {
 			Trabajador trabajador = new Trabajador(original.trabajadores.get(i).getNombre(), original.trabajadores.get(i).getHabPodar(), original.trabajadores.get(i).getHabLimpiar(), original.trabajadores.get(i).getHabReparar());
-			Herramienta herramienta = new Herramienta(original.trabajadores.get(i).getHerramienta());
-			trabajador.setHerramienta(herramienta);
+			if(original.trabajadores.get(i).getHerramienta() != null) {
+				Herramienta herramienta = new Herramienta(original.trabajadores.get(i).getHerramienta());
+				trabajador.setHerramienta(herramienta);
+			}
 			trabajador.setArea(original.trabajadores.get(i).getArea());
 			trabajador.setTiempoOcupado(original.trabajadores.get(i).getTiempoOcupado());
-			Tarea tarea = new Tarea(original.trabajadores.get(i).getTarea());
-			trabajador.setTarea(tarea);
+			if(original.trabajadores.get(i).getTarea() != null) {
+				Tarea tarea = new Tarea(original.trabajadores.get(i).getTarea());
+				trabajador.setTarea(tarea);
+			}
 			trabajadores.add(trabajador);
 		}
 		this.trabajadores = trabajadores;
@@ -92,15 +96,28 @@ public class Node {
 	 */
 	public void computeHeuristic(Node finalNode) {
 		// Heurística muy básica: las tareas restantes por hacer
-		
 		this.heuristic = 0;
 		
 		for(int i = 0; i < this.tareas.size(); i++) {
-			if(this.tareas.get(i).getUnidades() > 0) {
-				this.heuristic++;
-			}
+			this.heuristic += 60 * this.tareas.get(i).getUnidades();
 		}
 		
+		double costeDesplazar = 0;
+		for(int i = 0; i < this.trabajadores.size(); i++) {
+			for(int j = 0; j < this.tareas.size(); j++) {
+				if(this.trabajadores.get(i).getHerramienta() != null) {
+					if(this.trabajadores.get(i).getHerramienta().getTrabajo().equals(this.tareas.get(j).getTipo())) {
+						if((j + i*this.tareas.size()) == 0) {
+							costeDesplazar = this.trabajadores.get(i).TiempoEnDesplazarse(this.trabajadores.get(i).getArea(), this.tareas.get(j).getArea());
+						}
+						if(costeDesplazar > this.trabajadores.get(i).TiempoEnDesplazarse(this.trabajadores.get(i).getArea(), this.tareas.get(j).getArea())) {
+							costeDesplazar = this.trabajadores.get(i).TiempoEnDesplazarse(this.trabajadores.get(i).getArea(), this.tareas.get(j).getArea());
+						}
+					}
+				}
+			}
+		}
+		this.heuristic += costeDesplazar;
 	}
 
 	/**
@@ -111,44 +128,38 @@ public class Node {
 	 * @return true: son iguales. false: no lo son
 	 */
 	public boolean equals(Node other) {
-		boolean check = true;
-		
-		// Caso nodo meta: bastará con que las unidades de trabajo sean nulas
-		boolean goalNode = true;
-		for(int i = 0; i < this.tareas.size(); i++) {
-			if(this.tareas.get(i).getUnidades() != 0) {
-				goalNode = false;
-			}
-		}
-		for(int i = 0; i < this.tareas.size(); i++) {
-			if(other.tareas.get(i).getUnidades() != 0) {
-				goalNode = false;
-			}
-		}
-		if(goalNode) {
-			return check;
-		}
-		
-		// Resto de casos: serán iguales si los trabajadores están en las mismas áreas, con las mismas herramientas equipadas y con las mismas unidades de tarea restantes
-		// Primero se comprueba si algún trabajador está en áreas distintas en cada nodo
-		for(int i = 0; i < this.trabajadores.size(); i++) {
-			if(!this.trabajadores.get(i).getArea().equals(other.trabajadores.get(i).getArea())) {
-				check = false;
-			}
-		}
-		// Viendo que están en las mismas áreas, se comprueba si alguno tiene una herramienta distinta
-		for(int i = 0; i < this.trabajadores.size(); i++) {
-			if(!this.trabajadores.get(i).getHerramienta().equals(other.trabajadores.get(i).getHerramienta())) {
-				check = false;
-			}
-		}
-		// Por último, se comprueba si las unidades de trabajo de alguna tarea es distinta
+		// Que todas las tareas tengan las mismas unidades
 		for(int i = 0; i < this.tareas.size(); i++) {
 			if(this.tareas.get(i).getUnidades() != other.tareas.get(i).getUnidades()) {
-				check = false;
+				return false;
 			}
 		}
-		return check;
+		// Que todos los trabajadores hayan trabajado el mismo tiempo, están en los mismos sitios y con las mismas herramientas
+		for(int i = 0; i < this.trabajadores.size(); i++) {
+			if(this.trabajadores.get(i).getTiempoOcupado() != other.trabajadores.get(i).getTiempoOcupado()) {
+				return false;
+			}
+			if(!this.trabajadores.get(i).getArea().equals(other.trabajadores.get(i).getArea())) {
+				return false;
+			}
+			if(this.trabajadores.get(i).getHerramienta() != null && other.trabajadores.get(i).getHerramienta() != null) {
+				if(this.trabajadores.get(i).getHerramienta().getId() != other.trabajadores.get(i).getHerramienta().getId()) {
+					return false;
+				}
+			}else if(this.trabajadores.get(i).getHerramienta() != null && other.trabajadores.get(i).getHerramienta() == null) {
+				return false;
+			}else if(this.trabajadores.get(i).getHerramienta() == null && other.trabajadores.get(i).getHerramienta() != null) {
+				return false;
+			}
+		}
+		// Que las herramientas estén en los mismos sitios
+		for(int i = 0; i < this.tareas.size(); i++) {
+			if(this.herramientas.get(i).getArea().equals(other.herramientas.get(i).getArea())) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 
@@ -162,7 +173,7 @@ public class Node {
 		for(int i = 0; i < this.trabajadores.size(); i++) {
 			Trabajador trabajador = this.trabajadores.get(i);
 			if(trabajador.getHerramienta() == null) {
-				System.out.println(trabajador.getNombre() + " está en " + trabajador.getArea() + ", sin herramienta " + " y lleva trabajando " + trabajador.getTiempoOcupado() + " minutos.");
+				System.out.println(trabajador.getNombre() + " está en " + trabajador.getArea() + ", sin herramienta y lleva trabajando " + trabajador.getTiempoOcupado() + " minutos.");
 			}else {
 				System.out.println(trabajador.getNombre() + " está en " + trabajador.getArea() + ", con herramienta " + trabajador.getHerramienta().getNombre() + " y lleva trabajando " + trabajador.getTiempoOcupado() + " minutos.");
 			}
@@ -174,6 +185,8 @@ public class Node {
 			}
 		}
 		System.out.println("Quedan " + tareasRestantes + " tareas restantes por hacer.");
+		System.out.println("H(n): " + this.heuristic + "; C(n): " + this.cost + "; E(n): " + this.evaluation);
+		System.out.println();
 	}
 
 	/**
@@ -188,6 +201,10 @@ public class Node {
 	 */
 	public void addCoste(double cantidad) {
 		setCoste(cost + cantidad);
+	}
+	
+	public void setNodeListNull() {
+		this.nextNodeList = null;
 	}
 
 	/**** Getters y Setters ****/

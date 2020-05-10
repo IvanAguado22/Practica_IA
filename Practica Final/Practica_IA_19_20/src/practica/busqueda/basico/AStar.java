@@ -42,15 +42,14 @@ public class AStar {
 				for(int j = 0; j < currentNode.herramientas.size(); j++) {
 					Herramienta herramienta = currentNode.herramientas.get(j);
 					Node newNode = new Node(currentNode);
+					newNode.setNodeListNull();
 					if(!herramienta.getEquipada()) {
-						double coste = trabajador.DesplazarseHaciaA();
-						trabajador.cogerHerramienta(herramienta);
-						if(checkNode(newNode)) {
-							newNode.computeHeuristic(goalNode);
-							newNode.addCoste(coste);
-							newNode.computeEvaluation();
-							openList.insertAtEvaluation(newNode);
-						}
+						double coste = newNode.trabajadores.get(i).DesplazarseHaciaA();
+						newNode.trabajadores.get(i).cogerHerramienta(newNode.herramientas.get(j));
+						newNode.computeHeuristic(goalNode);
+						newNode.addCoste(coste);
+						newNode.computeEvaluation();
+						openList.insertAtEvaluation(newNode);
 					}
 				}
 			}else {
@@ -64,14 +63,13 @@ public class AStar {
 				}
 				if(!tareasPorHacer) {
 					Node newNode = new Node(currentNode);
-					double coste = trabajador.DesplazarseHaciaA();
-					trabajador.dejarHerramienta();
-					if(checkNode(newNode)) {
-						newNode.computeHeuristic(goalNode);
-						newNode.addCoste(coste);
-						newNode.computeEvaluation();
-						openList.insertAtEvaluation(newNode);
-					}
+					newNode.setNodeListNull();
+					double coste = newNode.trabajadores.get(i).DesplazarseHaciaA();
+					newNode.trabajadores.get(i).dejarHerramienta();
+					newNode.computeHeuristic(goalNode);
+					newNode.addCoste(coste);
+					newNode.computeEvaluation();
+					openList.insertAtEvaluation(newNode);
 				}
 			}
 			
@@ -80,23 +78,21 @@ public class AStar {
 			for(int j = 0; j < currentNode.tareas.size(); j++) {
 				Tarea tarea = currentNode.tareas.get(j);
 				Node newNode = new Node(currentNode);
+				newNode.setNodeListNull();
 				if(trabajador.getHerramienta() != null) {
 					if(tarea.getTipo().equals(trabajador.getHerramienta().getTrabajo()) && tarea.getUnidades() > 0) {
-						double coste = trabajador.Desplazarse(trabajador.getArea(), tarea.getArea());
-						trabajador.setTarea(tarea);
-						coste += trabajador.RealizarTarea();
-						if(checkNode(newNode)) {
-							newNode.computeHeuristic(goalNode);
-							newNode.addCoste(coste);
-							newNode.computeEvaluation();
-							openList.insertAtEvaluation(newNode);
-						}
+						double coste = newNode.trabajadores.get(i).Desplazarse(trabajador.getArea(), tarea.getArea());
+						newNode.trabajadores.get(i).setTarea(tarea);
+						coste += newNode.trabajadores.get(i).RealizarTarea();
+						newNode.computeHeuristic(goalNode);
+						newNode.addCoste(coste);
+						newNode.computeEvaluation();
+						openList.insertAtEvaluation(newNode);
 					}
 				}
 			}
 		
 		}
-		
 		
 	}
 	
